@@ -135,6 +135,10 @@ body {
   aside.warning:before {
     @extend %icon-exclamation-sign;
   }
+  
+  aside.error:before {
+    @extend %icon-exclamation-sign;
+  }
 
   aside.success:before {
     @extend %icon-ok-sign;

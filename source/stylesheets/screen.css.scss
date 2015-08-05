@@ -481,6 +481,11 @@ html, body {
       background-color: $aside-warning-bg;
       @include text-shadow(0 1px 0 lighten($aside-warning-bg, 15%));
     }
+	
+	&.error {
+      background-color: $aside-error-bg;
+      @include text-shadow(0 1px 0 lighten($aside-error-bg, 15%));
+	}
 
     &.success {
       background-color: $aside-success-bg;
@@ -499,6 +504,10 @@ html, body {
   }
 
   aside.warning:before {
+    @extend %icon-exclamation-sign;
+  }
+  
+  aside.error:before {
     @extend %icon-exclamation-sign;
   }
 
@@ -526,7 +535,7 @@ html, body {
     background-color: $code-bg;
     color: #fff;
 
-    padding: 2em $main-padding;
+    padding: 1em $main-padding;
     margin: 0;
     width: $examples-width;
 
