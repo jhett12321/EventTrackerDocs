@@ -43,15 +43,14 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="welcome">Welcome!</h1>
+        
+          <h1 id="welcome">Welcome!</h1>
 
-<p>Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find</p>
-
-<h2 id="api-status-downtime-notices">API Status/Downtime Notices</h2>
-
-<aside class="notice">
-API Service is operating normally.
+<aside class="success">
+All API Services are operating normally.
 </aside>
+
+<p>Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find documented examples and JSON formats for the various feeds provided by the API service, and the additional subscription/filter features that you can use to customize the events you receive.</p>
 
 <h2 id="api-keys-amp-api-support-requests">API Keys &amp; API Support/Requests</h2>
 
@@ -59,46 +58,41 @@ API Service is operating normally.
 
 <h2 id="connecting-to-the-api-authetication">Connecting to the API/Authetication</h2>
 
-<p>The Extended Census Websocket uses API keys for authentication and access (which you can get from above). The API key &ldquo;example&rdquo; can also be used for experimenting with the API, although use of this key may be limited in the future.</p>
+<blockquote>
+<p>Connecting to the API</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="c1">// Open Websocket Connection</span>
+<span class="kd">var</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="s2">"example"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">"ws://push.api.blackfeatherproductions.com/?apikey="</span> <span class="o">+</span> <span class="nx">apiKey</span><span class="p">;</span>
+<span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
 
-<aside class="notice">
-Always use your API key in production applications. Do not use &ldquo;example&rdquo;.
-</aside>
-
-<p>1: Open a websocket connection to: ws://push.api.blackfeatherproductions.com/?apikey=example</p>
-<pre class="highlight javascript"><code>    <span class="c1">// Open Websocket Connection</span>
-    <span class="kd">var</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="s2">"example"</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="s2">"ws://push.api.blackfeatherproductions.com/?apikey="</span> <span class="o">+</span> <span class="nx">apiKey</span><span class="p">;</span>
-    <span class="nx">ws</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WebSocket</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
-</code></pre>
-
-<p>2: You will receive some messages confirming your websocket connection, and the status of Census websocket feeds.</p>
-<pre class="highlight javascript"><code>    <span class="c1">// Set event handlers.</span>
-    <span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
+<span class="c1">// Set event handlers.</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onopen</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Connection Established!"</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// All messages sent by the API are JSON. Parse it so we can work with it.</span>
+    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">evt</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">websocket_event</span> <span class="o">!=</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">websocket_event</span> <span class="o">==</span> <span class="s2">"connectionStateChange"</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">online</span> <span class="o">==</span> <span class="s2">"true"</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Connection Established!"</span><span class="p">);</span>
-    <span class="p">};</span>
-    <span class="nx">ws</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// All messages sent by the API are JSON. Parse it so we can work with it.</span>
-        <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">evt</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-        <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">websocket_event</span> <span class="o">!=</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">websocket_event</span> <span class="o">==</span> <span class="s2">"connectionStateChange"</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="c1">// We are now connected. Do stuff.</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-    <span class="nx">ws</span><span class="p">.</span><span class="nx">onclose</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Connection Closed."</span><span class="p">);</span>
-    <span class="p">};</span>
-    <span class="nx">ws</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Error: "</span> <span class="o">+</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
-    <span class="p">};</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket API Ready."</span><span class="p">);</span>
+        <span class="c1">//The API is ready to receive messages.</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onclose</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Connection Closed."</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Websocket Error: "</span> <span class="o">+</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">};</span>
 </code></pre>
 
 <blockquote>
-<p>Connection Message</p>
+<p>After connecting, you will receive a ConnectionStateChange message.</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"service"</span><span class="p">:</span><span class="s2">"ps2_events"</span><span class="p">,</span><span class="w">
@@ -108,10 +102,8 @@ Always use your API key in production applications. Do not use &ldquo;example&rd
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<p>3: You will also receive several ServiceStateChange messages detailing the status of census websocket feeds. More on this in the Service Events section.</p>
-
 <blockquote>
-<p>ServiceState Messages.</p>
+<p>&hellip; and a ServiceStateChange event for each world, indicating their online status.</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -123,66 +115,400 @@ Always use your API key in production applications. Do not use &ldquo;example&rd
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
+<p>The Extended Census Websocket uses API keys for authentication and access (which you can get via emailing us). The API key &ldquo;example&rdquo; can also be used for experimenting with the API, although use of this key may be limited in the future.</p>
+
+<aside class="notice">
+Always use your API key in production applications. Do not use &ldquo;example&rdquo;.
+</aside>
+
+<p>1: Open a websocket connection to: ws://push.api.blackfeatherproductions.com/?apikey=example</p>
+
+<p>2: You will receive some messages confirming your websocket connection, and the status of Census websocket feeds.</p>
+
+<p>3: You will also receive several ServiceStateChange messages detailing the status of census websocket feeds. More on this in the Service Events section.</p>
+
 <p>4: Send messages to the server using the actions, events and filters listed below as a guideline.</p>
 
-          <h1 id="errors">Errors</h1>
+          <h1 id="subscription-actions">Subscription Actions</h1>
 
-<aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files&hellip;just save them to the `includes` folder and add them to the top of your `index.md`&rsquo;s frontmatter. Files are included in the order listed.</aside>
+<blockquote>
+<p>Sending a message to the server.</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="c1">//The API is ready to receive messages.</span>
+<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span>
+<span class="p">{</span>
+    <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"subscribe"</span><span class="p">,</span>
+    <span class="s2">"event"</span><span class="p">:</span> <span class="s2">"BattleRank"</span><span class="p">,</span>
+    <span class="s2">"battle_ranks"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"100"</span><span class="p">]</span>
+<span class="p">};</span>
+<span class="nx">ws</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">message</span><span class="p">));</span>
 
-<p>The Kittn API uses the following error codes:</p>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Now listening for Battle Rank 100 events."</span><span class="p">);</span>
+</code></pre>
+
+<p>These actions are used to manage your event PUSH subscriptions. You will receive a JSON formatted confirmation message with your current subscriptions, and events will be sent to you as they happen.</p>
+
+<h2 id="subscribe">subscribe</h2>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BattleRank"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"battle_ranks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"11"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"subscriptions"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"BattleRank"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"battle_ranks"</span><span class="p">:[</span><span class="s2">"11"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>This is the probably the most common action. Use it to add filtered events to your subscription.</p>
+
+<aside class="notice">
+&ldquo;field_xx&rdquo; represents any combination of fields for an event. For more information on the filter system, see the  <a href="#filters">Filter Section</a>.
+</aside>
+
+<aside class="notice">
+Subscriptions are additive, but please note that each event DOES NOT share the same filter list for each event. (i.e. specifying worlds for 1 event will not set worlds for all other subscriptions.)
+</aside>
+
+<p><strong>Sent Payload</strong></p>
 
 <table><thead>
 <tr>
-<th>Error Code</th>
-<th>Meaning</th>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>400</td>
-<td>Bad Request &ndash; Your request sucks</td>
+<td>action</td>
+<td>String</td>
+<td>The action we want to perform. In this case, subscribe.</td>
 </tr>
 <tr>
-<td>401</td>
-<td>Unauthorized &ndash; Your API key is wrong</td>
+<td>event</td>
+<td>String</td>
+<td>The event that contains the fields we want to unsubscribe from.</td>
 </tr>
 <tr>
-<td>403</td>
-<td>Forbidden &ndash; The kitten requested is hidden for administrators only</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found &ndash; The specified kitten could not be found</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed &ndash; You tried to access a kitten with an invalid method</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable &ndash; You requested a format that isn&rsquo;t json</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone &ndash; The kitten requested has been removed from our servers</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&rsquo;m a teapot</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests &ndash; You&rsquo;re requesting too many kittens! Slow down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error &ndash; We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable &ndash; We&rsquo;re temporarially offline for maintanance. Please try again later.</td>
+<td>field_xx</td>
+<td>String/Array</td>
+<td>The field, and associated value/s to add to the subscription.</td>
 </tr>
 </tbody></table>
 
+<p><strong>Response Payload</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>subscriptions</td>
+<td>Object</td>
+<td>Contains a mapped list of your current subscriptions, and their respective filtered fields.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>An echo of the action that modified &ldquo;subscriptions&rdquo;.</td>
+</tr>
+</tbody></table>
+
+<h2 id="unsubscribe">unsubscribe</h2>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BattleRank"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"battle_ranks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"11"</span><span class="p">,</span><span class="s2">"12"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"subscriptions"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"BattleRank"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"battle_ranks"</span><span class="p">:[</span><span class="s2">"11"</span><span class="p">,</span><span class="s2">"12"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unsubscribe"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BattleRank"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"battle_ranks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"11"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"subscriptions"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"BattleRank"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"battle_ranks"</span><span class="p">:[</span><span class="s2">"12"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Allows you to remove entries from an existing subscription.</p>
+
+<p><strong>Sent Payload</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>The action we want to perform. In this case, unsubscribe.</td>
+</tr>
+<tr>
+<td>event</td>
+<td>String</td>
+<td>The event that contains the fields we want to unsubscribe from.</td>
+</tr>
+<tr>
+<td>field_xx</td>
+<td>String/Array</td>
+<td>The field, and associated value/s to remove from the subscription.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Response Payload</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>subscriptions</td>
+<td>Object</td>
+<td>Contains a mapped list of your current subscriptions, and their respective filtered fields.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>An echo of the action that modified &ldquo;subscriptions&rdquo;.</td>
+</tr>
+</tbody></table>
+
+<h2 id="unsubscribeall">unsubscribeAll</h2>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BattleRank"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"battle_ranks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"11"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Combat"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"vehicles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"subscriptions"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"BattleRank"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"battle_ranks"</span><span class="p">:[</span><span class="s2">"11"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{</span><span class="w"> </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"Combat"</span><span class="p">:{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"loadouts"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"vehicles"</span><span class="p">:[</span><span class="s2">"7"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"weapons"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"headshots"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unsubscribeAll"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Combat"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"subscriptions"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"BattleRank"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"characters"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"outfits"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"factions"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"battle_ranks"</span><span class="p">:[</span><span class="s2">"11"</span><span class="p">],</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"worlds"</span><span class="p">:{},</span><span class="w">
+            </span><span class="nt">"useAND"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"all"</span><span class="p">:</span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"environments"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"show"</span><span class="p">:[],</span><span class="w">
+            </span><span class="nt">"hide"</span><span class="p">:[]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"unsubscribeAll"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Allows you to clear all subscribed events, both globally and on an event level.</p>
+
+<p><strong>Sent Payload</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>The action we want to perform. In this case, unsubscribeAll.</td>
+</tr>
+<tr>
+<td>event</td>
+<td>String</td>
+<td>(Optional) The event that you wish to remove all subscriptions from. Not specifying an event clears all subscriptions.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Response Payload</strong></p>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>subscriptions</td>
+<td>Object</td>
+<td>Contains a mapped list of your current subscriptions, and their respective filtered fields.</td>
+</tr>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>An echo of the action that modified &ldquo;subscriptions&rdquo;.</td>
+</tr>
+</tbody></table>
+
+          
+          
+          
+          
+          
       </div>
       <div class="dark-box">
           <div class="lang-selector">
