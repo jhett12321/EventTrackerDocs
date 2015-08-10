@@ -3,6 +3,11 @@
 All API Services are operating normally.
 </aside>
 
+<aside class="error">
+<b>DEPRECATION NOTICE: Current Status Actions</b></br>
+Support for all current status actions will be DROPPED in the upcoming 1.5 update.
+</aside>
+
 Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find documented examples and JSON formats for the various feeds provided by the API service, and the additional subscription/filter features that you can use to customize the events you receive.
 
 ## API Keys & API Support/Requests
