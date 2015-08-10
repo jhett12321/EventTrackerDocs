@@ -50,6 +50,11 @@
 All API Services are operating normally.
 </aside>
 
+<aside class="error">
+<b>DEPRECATION NOTICE: Current Status Actions</b></br>
+Support for all current status actions will be DROPPED in the upcoming 1.5 update.
+</aside>
+
 <p>Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find documented examples and JSON formats for the various feeds provided by the API service, and the additional subscription/filter features that you can use to customize the events you receive.</p>
 
 <h2 id="api-keys-amp-api-support-requests">API Keys &amp; API Support/Requests</h2>
@@ -504,7 +509,196 @@ Subscriptions are additive, but please note that each event DOES NOT share the s
 </tr>
 </tbody></table>
 
-          
+          <h1 id="status-actions">Status Actions</h1>
+
+<p>These actions return information/data that might be useful if you are reconnecting and missed the original associated event.</p>
+
+<h2 id="activemetagameevents">activeMetagameEvents</h2>
+
+<p>Returns all active metagame events/alerts (and their respective facilities) across all servers. Optionally, you can provide an array of world_id&rsquo;s to get metagame event information for only the specified servers.</p>
+
+<aside class="warning">
+If a world does not contain any running metagame events, it WILL NOT appear in the worlds node.
+</aside>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"activeMetagameEvents"</span><span class="p">,</span><span class="w"> </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1002"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response
+(Please note this has been truncated, the facilities and metagame_events arrays have much more than 1 element)</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"activeMetagameEvents"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"1002"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"metagame_events"</span><span class="p">:</span><span class="w">
+            </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="nt">"instance_id"</span><span class="p">:</span><span class="s2">"303"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"metagame_event_type_id"</span><span class="p">:</span><span class="s2">"4"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"facility_type_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"category_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"4"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"start_time"</span><span class="p">:</span><span class="s2">"1439216803"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"end_time"</span><span class="p">:</span><span class="s2">"1439224003"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_vs"</span><span class="p">:</span><span class="s2">"28"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_nc"</span><span class="p">:</span><span class="s2">"37"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_tr"</span><span class="p">:</span><span class="s2">"34"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"facilities"</span><span class="p">:</span><span class="w">
+                    </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="nt">"facility_id"</span><span class="p">:</span><span class="s2">"307010"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"facility_type_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"owner"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"4"</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">]</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h3 id="sent-payload">Sent Payload</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>The action we want to perform. In this case, activeMetagameEvents.</td>
+</tr>
+<tr>
+<td>worlds</td>
+<td>String/Array</td>
+<td>(Optional) A single or list of worlds that you want Metagame info for. Not specifying any worlds gets all metagame events across all worlds.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-payload">Response Payload</h3>
+
+<h3 id="root-node">root node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>An echo of the action that generated &ldquo;worlds&rdquo;</td>
+</tr>
+<tr>
+<td>worlds</td>
+<td>Object</td>
+<td>The parent node containing all worlds which have metagame events (and were inside &ldquo;worlds&rdquo; if specified in the sent request)</td>
+</tr>
+</tbody></table>
+
+<h3 id="metagame_events-node">metagame_events node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>instance_id</td>
+<td>String</td>
+<td>Represents the WORLD unique instance ID of this metagame event. This is not globally unique, and can clash with other servers/worlds. Use this to match up start/update/end metagame events that come through the &ldquo;MetagameEvent&rdquo; subscription. Matches the <a href="https://census.daybreakgames.com/get/ps2:v2/world_event/?type=METAGAME&amp;c:limit=1">&ldquo;instance_id&rdquo; found on Census</a></td>
+</tr>
+<tr>
+<td>metagame_event_type_id</td>
+<td>String</td>
+<td>Represents the type of this metagame. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/metagame_event/?c:limit=1000">&ldquo;metagame_event_id&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>facility_type_id</td>
+<td>String</td>
+<td>Represents the facility type for facility metagame events. Returns &ldquo;0&rdquo; if metagame event is not facility type specific, otherwise returns the relating facility type. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/facility_type/?c:limit=1000">&ldquo;facility_type_id&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>category_id</td>
+<td>String</td>
+<td>Represents the Magic &ldquo;type&rdquo; value given to metagame events by census. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/metagame_event/?c:limit=1000">&ldquo;type&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>zone_id</td>
+<td>String</td>
+<td>Represents the zone relating to this metagame event. Returns &ldquo;0&rdquo; if metagame event is global, otherwise returns the related zone. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/zone/?c:limit=1000">&ldquo;zone_id&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>start_time</td>
+<td>String</td>
+<td>Represents the epoch time (in seconds) when this metagame event started.</td>
+</tr>
+<tr>
+<td>end_time</td>
+<td>String</td>
+<td>Represents the epoch time (in seconds) when the metagame event IS EXPECTED to end.</td>
+</tr>
+<tr>
+<td>control_xx</td>
+<td>String</td>
+<td>Represents the rounded down territory control percentage from 0-100.</td>
+</tr>
+<tr>
+<td>facilities</td>
+<td>Array</td>
+<td>Represents all facilities that contribute/have influence for this metagame event.</td>
+</tr>
+</tbody></table>
+
+<h3 id="facilities-node">facilities node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>facility_id</td>
+<td>String</td>
+<td>Represents the unique ID of this facility. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/region/?c:limit=1000">&ldquo;region_id&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>facility_type_id</td>
+<td>String</td>
+<td>Represents the type of this facility (Bio-lab, Outpost, etc). Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/facility_type/?c:limit=1000">&ldquo;facility_type_id&rdquo; found on Census</a> for this region.</td>
+</tr>
+<tr>
+<td>owner</td>
+<td>String</td>
+<td>Represents the owner of this facility. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/faction/?c:limit=1000">&ldquo;faction_id&rdquo; found on Census</a></td>
+</tr>
+<tr>
+<td>zone_id</td>
+<td>String</td>
+<td>Represents the zone this facility is located in. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/zone/?c:limit=1000">&ldquo;zone_id&rdquo; found on Census</a></td>
+</tr>
+</tbody></table>
+
           
           
           
