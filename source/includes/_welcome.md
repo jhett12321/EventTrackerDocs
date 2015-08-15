@@ -1,4 +1,9 @@
 # Welcome!
+<aside class="warning">
+<b> Work in Progress!! </b></br>
+This documentation is work in progress! Some features may be missing/out-of-date. Old documentation can be found <a href='https://docs.google.com/document/d/19_moYp_ibrd0-3rDiU7g2cJLQNUP6ROTqK3z1u_IqcM'>HERE</a>.
+</aside>
+
 <aside class="success">
 All API Services are operating normally.
 </aside>
