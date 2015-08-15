@@ -46,6 +46,11 @@
         
           <h1 id="welcome">Welcome!</h1>
 
+<aside class="warning">
+<b> Work in Progress!! </b></br>
+This documentation is work in progress! Some features may be missing/out-of-date. Old documentation can be found <a href='https://docs.google.com/document/d/19_moYp_ibrd0-3rDiU7g2cJLQNUP6ROTqK3z1u_IqcM'>HERE</a>.
+</aside>
+
 <aside class="success">
 All API Services are operating normally.
 </aside>
@@ -513,7 +518,7 @@ Subscriptions are additive, but please note that each event DOES NOT share the s
 
 <p>These actions return information/data that might be useful if you are reconnecting and missed the original associated event.</p>
 
-<h2 id="activemetagameevents">activeMetagameEvents</h2>
+<h2 id="activemetagameevents-previously-activealerts">activeMetagameEvents (previously activeAlerts)</h2>
 
 <p>Returns all active metagame events/alerts (and their respective facilities) across all servers. Optionally, you can provide an array of world_id&rsquo;s to get metagame event information for only the specified servers.</p>
 
@@ -531,7 +536,7 @@ If a world does not contain any running metagame events, it WILL NOT appear in t
 
 <blockquote>
 <p>Response
-(Please note this has been truncated, the facilities and metagame_events arrays have much more than 1 element)</p>
+(Please note this has been truncated, the facilities and metagame_events arrays have more than 1 element)</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"activeMetagameEvents"</span><span class="p">,</span><span class="w">
@@ -585,7 +590,7 @@ If a world does not contain any running metagame events, it WILL NOT appear in t
 <tr>
 <td>worlds</td>
 <td>String/Array</td>
-<td>(Optional) A single or list of worlds that you want Metagame info for. Not specifying any worlds gets all metagame events across all worlds.</td>
+<td>(Optional) A single or list of world ID&rsquo;s (<a href="http://census.daybreakgames.com/get/ps2:v2/world/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/world/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/world/?c:limit=1000">PS4-EU</a>) that you want Metagame info for. Not specifying any worlds gets all metagame events across all worlds.</td>
 </tr>
 </tbody></table>
 
@@ -608,7 +613,7 @@ If a world does not contain any running metagame events, it WILL NOT appear in t
 <tr>
 <td>worlds</td>
 <td>Object</td>
-<td>The parent node containing all worlds which have metagame events (and were inside &ldquo;worlds&rdquo; if specified in the sent request)</td>
+<td>The parent node containing all worlds valid for the sent request. JSON keys/properties match the &ldquo;world_id&rdquo; found on Census (<a href="http://census.daybreakgames.com/get/ps2:v2/world/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/world/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/world/?c:limit=1000">PS4-EU</a>).</td>
 </tr>
 </tbody></table>
 
@@ -659,12 +664,186 @@ If a world does not contain any running metagame events, it WILL NOT appear in t
 <tr>
 <td>control_xx</td>
 <td>String</td>
-<td>Represents the rounded down territory control percentage from 0-100.</td>
+<td>Represents the rounded down territory control percentage from 0-100 for faction &ldquo;xx&rdquo;. &ldquo;control_vs&rdquo;, &ldquo;control_nc&rdquo; and &ldquo;control_tr&rdquo; represent each factions territory control.</td>
 </tr>
 <tr>
 <td>facilities</td>
 <td>Array</td>
 <td>Represents all facilities that contribute/have influence for this metagame event.</td>
+</tr>
+</tbody></table>
+
+<h3 id="facilities-node">facilities node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>facility_id</td>
+<td>String</td>
+<td>Represents the unique ID of this facility. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/region/?c:limit=1000">&ldquo;region_id&rdquo; found on Census</a>.</td>
+</tr>
+<tr>
+<td>facility_type_id</td>
+<td>String</td>
+<td>Represents the type of this facility (Bio-lab, Outpost, etc). Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/facility_type/?c:limit=1000">&ldquo;facility_type_id&rdquo; found on Census</a> for this region.</td>
+</tr>
+<tr>
+<td>owner</td>
+<td>String</td>
+<td>Represents the owner of this facility. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/faction/?c:limit=1000">&ldquo;faction_id&rdquo; found on Census</a></td>
+</tr>
+<tr>
+<td>zone_id</td>
+<td>String</td>
+<td>Represents the zone this facility is located in. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/zone/?c:limit=1000">&ldquo;zone_id&rdquo; found on Census</a></td>
+</tr>
+</tbody></table>
+
+<h2 id="worldstatus-previously-zonestatus-facilitystatus">worldStatus (Previously zoneStatus/facilityStatus)</h2>
+
+<p>Returns zone (territory control, lock) and facility information (ownership) for the given world/zones.</p>
+
+<blockquote>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"worldStatus"</span><span class="p">,</span><span class="w"> </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">],</span><span class="w"> </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response
+(Please note this has been truncated, the worlds, zones and facilites arrays can contain more than 1 element, depending on the query.)</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"worldStatus"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"25"</span><span class="p">:</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"zones"</span><span class="p">:</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"2"</span><span class="p">:</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="nt">"locked"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"locked_by"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_vs"</span><span class="p">:</span><span class="s2">"28"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_nc"</span><span class="p">:</span><span class="s2">"27"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"control_tr"</span><span class="p">:</span><span class="s2">"44"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"facilities"</span><span class="p">:</span><span class="w">
+                    </span><span class="p">[</span><span class="w">
+                        </span><span class="p">{</span><span class="w">
+                            </span><span class="nt">"facility_id"</span><span class="p">:</span><span class="s2">"4430"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"facility_type_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"owner"</span><span class="p">:</span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                            </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="w">
+                        </span><span class="p">}</span><span class="w">
+                    </span><span class="p">]</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h3 id="sent-payload">Sent Payload</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>The action we want to perform. In this case, worldStatus.</td>
+</tr>
+<tr>
+<td>worlds</td>
+<td>String/Array</td>
+<td>(Optional) A single or list of world ID&rsquo;s (<a href="http://census.daybreakgames.com/get/ps2:v2/world/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/world/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/world/?c:limit=1000">PS4-EU</a>) that you want zone/facility info for. Not specifying any worlds gets data from all worlds.</td>
+</tr>
+<tr>
+<td>zones</td>
+<td>String/Array</td>
+<td>(Optional) A single or list of zone ID&rsquo;s (<a href="http://census.daybreakgames.com/get/ps2:v2/zone/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/zone/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/zone/?c:limit=1000">PS4-EU</a>) that you want zone/facility info for. Not specifying any zones gets data from all zones.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-payload">Response Payload</h3>
+
+<h3 id="root-node">root node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>action</td>
+<td>String</td>
+<td>An echo of the action that generated &ldquo;worlds&rdquo;</td>
+</tr>
+<tr>
+<td>worlds</td>
+<td>Object</td>
+<td>The parent node containing all worlds valid for the sent request. JSON keys/properties match the &ldquo;world_id&rdquo; found on Census (<a href="http://census.daybreakgames.com/get/ps2:v2/world/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/world/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/world/?c:limit=1000">PS4-EU</a>).</td>
+</tr>
+</tbody></table>
+
+<h3 id="xx-world-id-node">xx world ID node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>zones</td>
+<td>Object</td>
+<td>The parent node containing all zones valid for the sent request. JSON keys/properties match the &ldquo;zone_id&rdquo; found on Census (<a href="http://census.daybreakgames.com/get/ps2:v2/zone/?c:limit=1000">PC</a> <a href="http://census.daybreakgames.com/get/ps2ps4us:v2/zone/?c:limit=1000">PS4-US</a> <a href="http://census.daybreakgames.com/get/ps2ps4eu:v2/zone/?c:limit=1000">PS4-EU</a>).</td>
+</tr>
+</tbody></table>
+
+<h3 id="zones-node">zones node</h3>
+
+<table><thead>
+<tr>
+<th>Field</th>
+<th>JSON Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>locked</td>
+<td>String</td>
+<td>Represents whether this zone is locked. &ldquo;0&rdquo; indicates the zone is unlocked, &ldquo;1&rdquo; indicates the zone is locked.</td>
+</tr>
+<tr>
+<td>locked_by</td>
+<td>String</td>
+<td>Represents the faction who locked this zone. If the zone is not locked, this returns &ldquo;0&rdquo;. Matches the <a href="http://census.daybreakgames.com/get/ps2:v2/faction/?c:limit=1000">&ldquo;faction_id&rdquo; found on Census</a></td>
+</tr>
+<tr>
+<td>control_xx</td>
+<td>String</td>
+<td>Represents the rounded down territory control percentage from 0-100 for faction &ldquo;xx&rdquo;. &ldquo;control_vs&rdquo;, &ldquo;control_nc&rdquo; and &ldquo;control_tr&rdquo; represent each factions territory control.</td>
+</tr>
+<tr>
+<td>facilities</td>
+<td>Array</td>
+<td>Represents all facilities inside this zone.</td>
 </tr>
 </tbody></table>
 
