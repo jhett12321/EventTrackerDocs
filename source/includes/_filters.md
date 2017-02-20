@@ -31,7 +31,7 @@ Disables all event-specific filters for the specified event, therefore receiving
 ## environments
 *"environments": ["pc","ps4_us"]*
 
-Only includes events from the selected platforms/environments. Valid values are “pc”, “ps4_us”, and “ps4_eu”.
+Only includes events from the selected platforms/environments. Valid values are â€œpcâ€, â€œps4_usâ€, and â€œps4_euâ€.
 
 ## show
 *"show": ["timestamp","facility_id"]*
@@ -50,9 +50,12 @@ NOTE: Overrides fields in **show**. If a field is in both **hide** and **show**,
 By default, the server checks each property with an OR statement. This setting allows you to mark properties that have both an attacker and victim type as AND.
 
 > VehicleCombat example: Getting air vehicle vs air vehicle combat
+
+> This subscription would return all air vehicle kills where the attacking vehicle, OR the victim's vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would still be sent to the client.
+
 > Sent
+
 ```json
-// This subscription would return all air vehicle kills where the attacking vehicle, OR the victim's vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would still be sent to the client.
 {
   "action":"subscribe",
   "event":"VehicleCombat",
@@ -60,9 +63,11 @@ By default, the server checks each property with an OR statement. This setting a
 }
 ```
 
+> This subscription would return all air vehicle kills where the attacking vehicle, AND the victim's vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would NOT be sent to the client.
+
 > Sent
+
 ```json
-//This subscription would return all air vehicle kills where the attacking vehicle, AND the victim's vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would NOT be sent to the client.
 {
   "action":"subscribe",
   "event":"VehicleCombat",

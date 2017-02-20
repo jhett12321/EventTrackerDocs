@@ -1,11 +1,9 @@
-# Events/Event Filters
-## Event Subscription/Payload Summary
-### Service Events (No Subscriptions/Filtering - Messages are always sent)
-#### ConnectionStateChange
+# Event Subscription/Payload Summary
+## Service Events (No Subscriptions/Filtering - Messages are always sent)
+### ConnectionStateChange
 
-Sent upon successful connection to the websocket service.
+> ConnectionStateChange - Example Response
 
-> Example Response
 ```json
 {
     "service" : "ps2_events",
@@ -15,11 +13,12 @@ Sent upon successful connection to the websocket service.
 }
 ```
 
-#### ServiceStateChange
+Sent upon successful connection to the websocket service.
 
-Sent upon connection to indicate the status of worlds (servers), and when servers go offline, or census experiences difficulties.
+### ServiceStateChange
 
-> Example Response
+> ServiceStateChange - Example Response
+
 ```json
 {
   "payload":
@@ -31,19 +30,13 @@ Sent upon connection to indicate the status of worlds (servers), and when server
 }
 ```
 
-### Custom Events
+Sent upon connection to indicate the status of worlds (servers), and when servers go offline, or census experiences difficulties.
 
-#### PopulationChange
+## Custom Events
 
-Called every time population changes.
+### PopulationChange
 
-Use the "population_type" filter to get online world, zone and outfit population.
-
-<aside class="notice">
-The "total" population type will give total population for an environment. Combine these environment values to get total population across all platforms.
-</aside>
-
-> Subscription Options
+> PopulationChange - Subscription Options
 
 ```json
 {
@@ -57,7 +50,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> PopulationChange - Example Response
 
 ```json
 {
@@ -73,14 +66,19 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
+Called every time population changes.
 
-### Extended Standard Events
+Use the "population_type" filter to get online world, zone and outfit population.
 
-#### AchievementEarned
+<aside class="notice">
+The "total" population type will give total population for an environment. Combine these environment values to get total population across all platforms.
+</aside>
 
-"The given character has earned a new achievement (medal or ribbon)"
+## Extended Standard Events
 
-> Subscription Options
+### AchievementEarned
+
+> AchievementEarned - Subscription Options
 
 ```json
 {
@@ -96,7 +94,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> AchievementEarned - Example Response
 
 ```json
 {
@@ -115,11 +113,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### BattleRank (Census: BattleRankUp)
+"The given character has earned a new achievement (medal or ribbon)"
 
-"The given character has achieved a new battle rank."
+### BattleRank (Census: BattleRankUp)
 
-> Subscription Options
+> BattleRank - Subscription Options
 
 ```json
 {
@@ -135,7 +133,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> BattleRank - Example Response
 
 ```json
 {
@@ -154,11 +152,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### Combat (Census: Death)
+"The given character has achieved a new battle rank."
 
-"The given character has been killed."
+### Combat (Census: Death)
 
-> Subscription Options
+> Combat - Subscription Options
 
 ```json
 {
@@ -177,7 +175,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> Combat - Example Response
 
 ```json
 {
@@ -205,11 +203,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### ContinentLock
+"The given character has been killed."
 
-"A continent has been locked."
+### ContinentLock
 
-> Subscription Options
+> ContinentLock - Subscription Options
 
 ```json
 {
@@ -221,7 +219,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> ContinentLock - Example Response
 
 ```json
 {
@@ -240,11 +238,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### ContinentUnlock
+"A continent has been locked."
 
-"A continent has been unlocked."
+### ContinentUnlock
 
-> Subscription Options
+> ContinentUnlock - Subscription Options
 
 ```json
 {
@@ -256,7 +254,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> ContinentUnlock - Example Response
 
 ```json
 {
@@ -275,11 +273,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### ExperienceEarned (Census: GainExperience)
+"A continent has been unlocked."
 
-"A player has gained experience. Match experience_id with http://census.daybreakgames.com/get/ps2/experience to find out what they did. Field other_id may refer to another player, or a vehicle, etc."
+### ExperienceEarned (Census: GainExperience)
 
-> Subscription Options
+> ExperienceEarned - Subscription Options
 
 ```json
 {
@@ -296,7 +294,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> ExperienceEarned - Example Response
 
 ```json
 {
@@ -318,11 +316,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### FacilityControl (Census: FacilityControl)
+"A player has gained experience. Match experience_id with http://census.daybreakgames.com/get/ps2/experience to find out what they did. Field other_id may refer to another player, or a vehicle, etc."
 
-"A facility has changed hands."
+### FacilityControl (Census: FacilityControl)
 
-> Subscription Options
+> FacilityControl - Subscription Options
 
 ```json
 {
@@ -339,7 +337,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> FacilityControl - Example Response
 
 ```json
 {
@@ -363,11 +361,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### Login (Census: PlayerLogin, PlayerLogout)
+"A facility has changed hands."
 
-"A character has logged in, or out of the game."
+### Login (Census: PlayerLogin, PlayerLogout)
 
-> Subscription Options
+> Login - Subscription Options
 
 ```json
 {
@@ -383,7 +381,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> Login - Example Response
 
 ```json
 {
@@ -401,11 +399,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### MetagameEvent (Census: MetagameEvent)
+"A character has logged in, or out of the game."
 
-"A metagame event (alert) has started or ended."
+### MetagameEvent (Census: MetagameEvent)
 
-> Subscription Options
+> MetagameEvent - Subscription Options
 
 ```json
 {
@@ -421,7 +419,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> MetagameEvent - Example Response
 
 ```json
 {
@@ -444,11 +442,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### PlayerFacilityControl (Census: PlayerFacilityCapture, PlayerFacilityDefend)
+"A metagame event (alert) has started or ended."
 
-"A player has taken part in the capture, or defense of a facility."
+### PlayerFacilityControl (Census: PlayerFacilityCapture, PlayerFacilityDefend)
 
-> Subscription Options
+> PlayerFacilityControl - Subscription Options
 
 ```json
 {
@@ -465,7 +463,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> PlayerFacilityControl - Example Response
 
 ```json
 {
@@ -485,11 +483,11 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-#### VehicleDestroy (Census: VehicleDestroy)
+"A player has taken part in the capture, or defense of a facility."
 
-"A vehicle has been destroyed."
+### VehicleDestroy (Census: VehicleDestroy)
 
-> Subscription Options
+> VehicleDestroy - Subscription Options
 
 ```json
 {
@@ -508,7 +506,7 @@ The "total" population type will give total population for an environment. Combi
 }
 ```
 
-> Example Response
+> VehicleDestroy - Example Response
 
 ```json
 {
@@ -527,3 +525,5 @@ The "total" population type will give total population for an environment. Combi
   "event_type":"PlayerFacilityControl"
 }
 ```
+
+"A vehicle has been destroyed."
