@@ -46,18 +46,8 @@
         
           <h1 id="welcome">Welcome!</h1>
 
-<aside class="warning">
-<b> Work in Progress!! </b></br>
-This documentation is work in progress! Some features may be missing/out-of-date. Old documentation can be found <a href='https://docs.google.com/document/d/19_moYp_ibrd0-3rDiU7g2cJLQNUP6ROTqK3z1u_IqcM'>HERE</a>.
-</aside>
-
 <aside class="success">
 All API Services are operating normally.
-</aside>
-
-<aside class="error">
-<b>DEPRECATION NOTICE: Current Status Actions</b></br>
-Support for all current status actions will be DROPPED in the upcoming 1.5 update.
 </aside>
 
 <p>Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find documented examples and JSON formats for the various feeds provided by the API service, and the additional subscription/filter features that you can use to customize the events you receive.</p>
@@ -878,9 +868,662 @@ If a world does not contain any running metagame events, it WILL NOT appear in t
 </tr>
 </tbody></table>
 
-          
-          
-          
+          <h1 id="introduction-to-filters">Introduction to Filters</h1>
+
+<p>All events can be filtered through the subscription system. Each event inherits all global filters, and implements multiple filters of their own. Use these filters to refine the events and data you receive.</p>
+
+<blockquote>
+<p>To specify a filter for an event, the general format is as follows.</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="s2">"event_name"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"filter_1"</span><span class="p">:[</span><span class="s2">"item1"</span><span class="p">,</span><span class="s2">"item2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"filter_2"</span><span class="p">:[</span><span class="s2">"item1"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>filter_x represents any combination of filters under the &ldquo;Filter Options&rdquo; for each event. For example, to subscribe to Combat events for a specific Outfit:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="s2">"Combat"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:[</span><span class="s2">"37510026483763654"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h1 id="global-filters-and-subscription-options">Global Filters and Subscription Options</h1>
+
+<h2 id="all">all</h2>
+
+<p><em>&ldquo;all&rdquo;: &ldquo;true&rdquo;</em></p>
+
+<p>Disables all event-specific filters for the specified event, therefore receiving all events for the given event type. As David from SOE describes it, &ldquo;it&rsquo;s like drinking from a firehose of events&rdquo;</p>
+
+<h2 id="environments">environments</h2>
+
+<p><em>&ldquo;environments&rdquo;: [&ldquo;pc&rdquo;,&ldquo;ps4_us&rdquo;]</em></p>
+
+<p>Only includes events from the selected platforms/environments. Valid values are “pc”, “ps4_us”, and “ps4_eu”.</p>
+
+<h2 id="show">show</h2>
+
+<p><em>&ldquo;show&rdquo;: [&ldquo;timestamp&rdquo;,&ldquo;facility_id&rdquo;]</em></p>
+
+<p>Only include the provided fields from the event within the message.</p>
+
+<h2 id="hide">hide</h2>
+
+<p><em>&ldquo;hide&rdquo;: [&ldquo;facility_id&rdquo;, &ldquo;world_id&rdquo;]</em></p>
+
+<p>Includes all fields except the provided fields from the event within the message.
+NOTE: Overrides fields in <strong>show</strong>. If a field is in both <strong>hide</strong> and <strong>show</strong>, it will be <strong>hidden</strong> from the event&rsquo;s messages.</p>
+
+<h2 id="useand">useAND</h2>
+
+<p><em>&ldquo;useAND&rdquo;: [&ldquo;property1&rdquo;, &ldquo;property2&rdquo;]</em></p>
+
+<p>By default, the server checks each property with an OR statement. This setting allows you to mark properties that have both an attacker and victim type as AND.</p>
+
+<blockquote>
+<p>VehicleCombat example: Getting air vehicle vs air vehicle combat
+Sent
+<code class="prettyprint">json
+// This subscription would return all air vehicle kills where the attacking vehicle, OR the victim&#39;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would still be sent to the client.
+{
+  &quot;action&quot;:&quot;subscribe&quot;,
+  &quot;event&quot;:&quot;VehicleCombat&quot;,
+  &quot;vehicles&quot;:[ &quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;10&quot;,&quot;11&quot;]
+}
+</code></p>
+
+<p>Sent
+<code class="prettyprint">json
+//This subscription would return all air vehicle kills where the attacking vehicle, AND the victim&#39;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would NOT be sent to the client.
+{
+  &quot;action&quot;:&quot;subscribe&quot;,
+  &quot;event&quot;:&quot;VehicleCombat&quot;,
+  &quot;vehicles&quot;:[&quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;10&quot;,&quot;11&quot;],
+  &quot;useAND&quot;:[&quot;vehicles&quot;]
+}
+</code></p>
+</blockquote>
+
+          <h1 id="events-event-filters">Events/Event Filters</h1>
+
+<h2 id="event-subscription-payload-summary">Event Subscription/Payload Summary</h2>
+
+<h3 id="service-events-no-subscriptions-filtering-messages-are-always-sent">Service Events (No Subscriptions/Filtering - Messages are always sent)</h3>
+
+<h4 id="connectionstatechange">ConnectionStateChange</h4>
+
+<p>Sent upon successful connection to the websocket service.</p>
+
+<blockquote>
+<p>Example Response
+<code class="prettyprint">json
+{
+    &quot;service&quot; : &quot;ps2_events&quot;,
+    &quot;version&quot; : &quot;1.0.3&quot;,
+    &quot;websocket_event&quot; : &quot;connectionStateChange&quot;,
+    &quot;online&quot; : &quot;true&quot;
+}
+</code></p>
+</blockquote>
+
+<h4 id="servicestatechange">ServiceStateChange</h4>
+
+<p>Sent upon connection to indicate the status of worlds (servers), and when servers go offline, or census experiences difficulties.</p>
+
+<blockquote>
+<p>Example Response
+<code class="prettyprint">json
+{
+  &quot;payload&quot;:
+  {
+    &quot;online&quot;:&quot;0&quot;,
+    &quot;world_id&quot;:&quot;13&quot;
+  },
+  &quot;event_type&quot;:&quot;ServiceStateChange&quot;
+}
+</code></p>
+</blockquote>
+
+<h3 id="custom-events">Custom Events</h3>
+
+<h4 id="populationchange">PopulationChange</h4>
+
+<p>Called every time population changes.</p>
+
+<p>Use the &ldquo;population_type&rdquo; filter to get online world, zone and outfit population.</p>
+
+<aside class="notice">
+The &ldquo;total&rdquo; population type will give total population for an environment. Combine these environment values to get total population across all platforms.
+</aside>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PopulationChange"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"population_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"total"</span><span class="p">,</span><span class="w"> </span><span class="s2">"world"</span><span class="p">,</span><span class="w"> </span><span class="s2">"zone"</span><span class="p">,</span><span class="w"> </span><span class="s2">"outfit"</span><span class="p">,</span><span class="w"> </span><span class="s2">"zone_outfit"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"37524301022235903"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"8"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"13"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"population_type"</span><span class="p">:</span><span class="s2">"zone_outfit"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"population_total"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37524301022235903"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"8"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"PopulationChange"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h3 id="extended-standard-events">Extended Standard Events</h3>
+
+<h4 id="achievementearned">AchievementEarned</h4>
+
+<p>&ldquo;The given character has earned a new achievement (medal or ribbon)&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AchievementEarned"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"achievements"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"6"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"5428196144902462561"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"StickyTapeProfit"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37528083641406998"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"achievement_id"</span><span class="p">:</span><span class="s2">"90022"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785275"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"AchievementEarned"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="battlerank-census-battlerankup">BattleRank (Census: BattleRankUp)</h4>
+
+<p>&ldquo;The given character has achieved a new battle rank.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BattleRank"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"battle_ranks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"90"</span><span class="p">,</span><span class="w"> </span><span class="s2">"95"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"8258686574497087089"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"lchSeheDich"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37517800549394039"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"battle_rank"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785325"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"BattleRank"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="combat-census-death">Combat (Census: Death)</h4>
+
+<p>&ldquo;The given character has been killed.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Combat"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"loadouts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"5"</span><span class="p">,</span><span class="w"> </span><span class="s2">"6"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"vehicles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"8"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"weapons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"98"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"headshots"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"attacker_character_id"</span><span class="p">:</span><span class="s2">"8258686574496803233"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attacker_character_name"</span><span class="p">:</span><span class="s2">"Neigler"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attacker_outfit_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attacker_faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attacker_loadout_id"</span><span class="p">:</span><span class="s2">"20"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"victim_character_id"</span><span class="p">:</span><span class="s2">"8257461498430035057"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"victim_character_name"</span><span class="p">:</span><span class="s2">"Carlwiecarl"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"victim_outfit_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"victim_faction_id"</span><span class="p">:</span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"victim_loadout_id"</span><span class="p">:</span><span class="s2">"12"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"weapon_id"</span><span class="p">:</span><span class="s2">"86"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"fire_mode_id"</span><span class="p">:</span><span class="s2">"127"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"vehicle_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"is_headshot"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785517"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"10"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"Combat"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+continentlock&quot;>ContinentLock</h4>
+
+<p>&ldquo;A continent has been locked.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ContinentLock"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"vs_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"nc_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"tr_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"locked_by"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"metagame_event_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785639"</span><span class="w">
+    </span><span class="s2">"zone_id"</span><span class="err">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"17"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"ContinentLock"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="continentunlock">ContinentUnlock</h4>
+
+<p>&ldquo;A continent has been unlocked.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ContinentUnlock"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"vs_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"nc_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"tr_population"</span><span class="p">:</span><span class="s2">"33"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"unlocked_by"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"metagame_event_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785639"</span><span class="w">
+    </span><span class="s2">"zone_id"</span><span class="err">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"17"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"ContinentUnlock"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExperience)</h4>
+
+<p>&ldquo;A player has gained experience. Match experience_id with http://census.daybreakgames.com/get/ps2/experience to find out what they did. Field other_id may refer to another player, or a vehicle, etc.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ExperienceEarned"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"experience_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"8"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"loadouts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"5"</span><span class="p">,</span><span class="w"> </span><span class="s2">"6"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"amount"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"5428123302638686705"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"lNighterl"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37509675644678161"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"experience_id"</span><span class="p">:</span><span class="s2">"93"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"loadout_id"</span><span class="p">:</span><span class="s2">"19"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"other_id"</span><span class="p">:</span><span class="s2">"174225795038838914"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785639"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"8"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"ExperienceEarned"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="facilitycontrol-census-facilitycontrol">FacilityControl (Census: FacilityControl)</h4>
+
+<p>&ldquo;A facility has changed hands.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FacilityControl"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"facilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4519"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"facility_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"8"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"captures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"facility_id"</span><span class="p">:</span><span class="s2">"222060"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"facility_type_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37509488620601614"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"duration_held"</span><span class="p">:</span><span class="s2">"691"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"new_faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"old_faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"is_capture"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_vs"</span><span class="p">:</span><span class="s2">"37"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_nc"</span><span class="p">:</span><span class="s2">"25"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_tr"</span><span class="p">:</span><span class="s2">"37"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785690"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"17"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"FacilityControl"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="login-census-playerlogin-playerlogout">Login (Census: PlayerLogin, PlayerLogout)</h4>
+
+<p>&ldquo;A character has logged in, or out of the game.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Login"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"is_login"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"8256737736841511857"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"KaBzZz"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37509528949546300"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"is_login"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785740"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"Login"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="metagameevent-census-metagameevent">MetagameEvent (Census: MetagameEvent)</h4>
+
+<p>&ldquo;A metagame event (alert) has started or ended.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MetagameEvent"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"metagames"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"metagame_types"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"statuses"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"0"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"dominations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"instance_id"</span><span class="p">:</span><span class="s2">"4278"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"type_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"start_time"</span><span class="p">:</span><span class="s2">"1424779839"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"end_time"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1424785835"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_vs"</span><span class="p">:</span><span class="s2">"63"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_nc"</span><span class="p">:</span><span class="s2">"23"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"control_tr"</span><span class="p">:</span><span class="s2">"13"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"domination"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"1"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"MetagameEvent"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="playerfacilitycontrol-census-playerfacilitycapture-playerfacilitydefend">PlayerFacilityControl (Census: PlayerFacilityCapture, PlayerFacilityDefend)</h4>
+
+<p>&ldquo;A player has taken part in the capture, or defense of a facility.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PlayerFacilityControl"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"facilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4519"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"captures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"5428100110522400353"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"SYD2842"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37524390589257254"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"facility_id"</span><span class="p">:</span><span class="s2">"222190"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"is_capture"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1429725298"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"PlayerFacilityControl"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h4 id="vehicledestroy-census-vehicledestroy">VehicleDestroy (Census: VehicleDestroy)</h4>
+
+<p>&ldquo;A vehicle has been destroyed.&rdquo;</p>
+
+<blockquote>
+<p>Subscription Options</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VehicleDestroy"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"all"</span><span class="p">:</span><span class="w"> </span><span class="s2">"false"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"characters"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"111112222"</span><span class="p">,</span><span class="w"> </span><span class="s2">"23333444323"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"outfits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"3333"</span><span class="p">,</span><span class="w"> </span><span class="s2">"111111"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"factions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"loadouts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"5"</span><span class="p">,</span><span class="w"> </span><span class="s2">"6"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"vehicles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"7"</span><span class="p">,</span><span class="w"> </span><span class="s2">"8"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"weapons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"98"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"facilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"4444"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"zones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"4"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"worlds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"25"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"character_id"</span><span class="p">:</span><span class="s2">"5428100110522400353"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"character_name"</span><span class="p">:</span><span class="s2">"SYD2842"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"outfit_id"</span><span class="p">:</span><span class="s2">"37524390589257254"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"faction_id"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"facility_id"</span><span class="p">:</span><span class="s2">"222190"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"is_capture"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"1429725298"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"zone_id"</span><span class="p">:</span><span class="s2">"6"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"PlayerFacilityControl"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+          <h1 id="data-reference">Data Reference</h1>
+
+<h2 id="static-data">Static Data</h2>
+
+<h3 id="worlds-servers">worlds (Servers)</h3>
+
+<table><thead>
+<tr>
+<th>ID</th>
+<th>World</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>Connery</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Miller</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Cobalt</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Emerald</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Jaeger</td>
+</tr>
+<tr>
+<td>25</td>
+<td>Briggs</td>
+</tr>
+</tbody></table>
+
           
       </div>
       <div class="dark-box">
