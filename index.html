@@ -927,83 +927,74 @@ NOTE: Overrides fields in <strong>show</strong>. If a field is in both <strong>h
 <p>By default, the server checks each property with an OR statement. This setting allows you to mark properties that have both an attacker and victim type as AND.</p>
 
 <blockquote>
-<p>VehicleCombat example: Getting air vehicle vs air vehicle combat
-Sent
-<code class="prettyprint">json
-// This subscription would return all air vehicle kills where the attacking vehicle, OR the victim&#39;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would still be sent to the client.
-{
-  &quot;action&quot;:&quot;subscribe&quot;,
-  &quot;event&quot;:&quot;VehicleCombat&quot;,
-  &quot;vehicles&quot;:[ &quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;10&quot;,&quot;11&quot;]
-}
-</code></p>
+<p>VehicleCombat example: Getting air vehicle vs air vehicle combat</p>
 
-<p>Sent
-<code class="prettyprint">json
-//This subscription would return all air vehicle kills where the attacking vehicle, AND the victim&#39;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would NOT be sent to the client.
-{
-  &quot;action&quot;:&quot;subscribe&quot;,
-  &quot;event&quot;:&quot;VehicleCombat&quot;,
-  &quot;vehicles&quot;:[&quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;10&quot;,&quot;11&quot;],
-  &quot;useAND&quot;:[&quot;vehicles&quot;]
-}
-</code></p>
+<p>This subscription would return all air vehicle kills where the attacking vehicle, OR the victim&rsquo;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would still be sent to the client.</p>
+
+<p>Sent</p>
 </blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="s2">"VehicleCombat"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"vehicles"</span><span class="p">:[</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">,</span><span class="s2">"10"</span><span class="p">,</span><span class="s2">"11"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
-          <h1 id="events-event-filters">Events/Event Filters</h1>
+<blockquote>
+<p>This subscription would return all air vehicle kills where the attacking vehicle, AND the victim&rsquo;s vehicle were an air vehicle. So if an aircraft destroyed a tank, the event would NOT be sent to the client.</p>
 
-<h2 id="event-subscription-payload-summary">Event Subscription/Payload Summary</h2>
+<p>Sent</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"event"</span><span class="p">:</span><span class="s2">"VehicleCombat"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"vehicles"</span><span class="p">:[</span><span class="s2">"7"</span><span class="p">,</span><span class="s2">"8"</span><span class="p">,</span><span class="s2">"9"</span><span class="p">,</span><span class="s2">"10"</span><span class="p">,</span><span class="s2">"11"</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"useAND"</span><span class="p">:[</span><span class="s2">"vehicles"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
-<h3 id="service-events-no-subscriptions-filtering-messages-are-always-sent">Service Events (No Subscriptions/Filtering - Messages are always sent)</h3>
+          <h1 id="event-subscription-payload-summary">Event Subscription/Payload Summary</h1>
 
-<h4 id="connectionstatechange">ConnectionStateChange</h4>
+<h2 id="service-events-no-subscriptions-filtering-messages-are-always-sent">Service Events (No Subscriptions/Filtering - Messages are always sent)</h2>
+
+<h3 id="connectionstatechange">ConnectionStateChange</h3>
+
+<blockquote>
+<p>ConnectionStateChange - Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"service"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ps2_events"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"version"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.3"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"websocket_event"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"connectionStateChange"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"online"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <p>Sent upon successful connection to the websocket service.</p>
 
-<blockquote>
-<p>Example Response
-<code class="prettyprint">json
-{
-    &quot;service&quot; : &quot;ps2_events&quot;,
-    &quot;version&quot; : &quot;1.0.3&quot;,
-    &quot;websocket_event&quot; : &quot;connectionStateChange&quot;,
-    &quot;online&quot; : &quot;true&quot;
-}
-</code></p>
-</blockquote>
+<h3 id="servicestatechange">ServiceStateChange</h3>
 
-<h4 id="servicestatechange">ServiceStateChange</h4>
+<blockquote>
+<p>ServiceStateChange - Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"online"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"world_id"</span><span class="p">:</span><span class="s2">"13"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"ServiceStateChange"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <p>Sent upon connection to indicate the status of worlds (servers), and when servers go offline, or census experiences difficulties.</p>
 
-<blockquote>
-<p>Example Response
-<code class="prettyprint">json
-{
-  &quot;payload&quot;:
-  {
-    &quot;online&quot;:&quot;0&quot;,
-    &quot;world_id&quot;:&quot;13&quot;
-  },
-  &quot;event_type&quot;:&quot;ServiceStateChange&quot;
-}
-</code></p>
-</blockquote>
+<h2 id="custom-events">Custom Events</h2>
 
-<h3 id="custom-events">Custom Events</h3>
-
-<h4 id="populationchange">PopulationChange</h4>
-
-<p>Called every time population changes.</p>
-
-<p>Use the &ldquo;population_type&rdquo; filter to get online world, zone and outfit population.</p>
-
-<aside class="notice">
-The &ldquo;total&rdquo; population type will give total population for an environment. Combine these environment values to get total population across all platforms.
-</aside>
+<h3 id="populationchange">PopulationChange</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>PopulationChange - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1017,7 +1008,7 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>PopulationChange - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1032,14 +1023,20 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h3 id="extended-standard-events">Extended Standard Events</h3>
+<p>Called every time population changes.</p>
 
-<h4 id="achievementearned">AchievementEarned</h4>
+<p>Use the &ldquo;population_type&rdquo; filter to get online world, zone and outfit population.</p>
 
-<p>&ldquo;The given character has earned a new achievement (medal or ribbon)&rdquo;</p>
+<aside class="notice">
+The &ldquo;total&rdquo; population type will give total population for an environment. Combine these environment values to get total population across all platforms.
+</aside>
+
+<h2 id="extended-standard-events">Extended Standard Events</h2>
+
+<h3 id="achievementearned">AchievementEarned</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>AchievementEarned - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1055,7 +1052,7 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>AchievementEarned - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1073,12 +1070,12 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="battlerank-census-battlerankup">BattleRank (Census: BattleRankUp)</h4>
+<p>&ldquo;The given character has earned a new achievement (medal or ribbon)&rdquo;</p>
 
-<p>&ldquo;The given character has achieved a new battle rank.&rdquo;</p>
+<h3 id="battlerank-census-battlerankup">BattleRank (Census: BattleRankUp)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>BattleRank - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1094,7 +1091,7 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>BattleRank - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1112,12 +1109,12 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="combat-census-death">Combat (Census: Death)</h4>
+<p>&ldquo;The given character has achieved a new battle rank.&rdquo;</p>
 
-<p>&ldquo;The given character has been killed.&rdquo;</p>
+<h3 id="combat-census-death">Combat (Census: Death)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>Combat - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1136,7 +1133,7 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>Combat - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1163,12 +1160,12 @@ The &ldquo;total&rdquo; population type will give total population for an enviro
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-continentlock&quot;>ContinentLock</h4>
+<p>&ldquo;The given character has been killed.&rdquo;</p>
 
-<p>&ldquo;A continent has been locked.&rdquo;</p>
+<h3 id="continentlock">ContinentLock</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>ContinentLock - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1180,7 +1177,7 @@ continentlock&quot;>ContinentLock</h4>
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>ContinentLock - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1198,12 +1195,12 @@ continentlock&quot;>ContinentLock</h4>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="continentunlock">ContinentUnlock</h4>
+<p>&ldquo;A continent has been locked.&rdquo;</p>
 
-<p>&ldquo;A continent has been unlocked.&rdquo;</p>
+<h3 id="continentunlock">ContinentUnlock</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>ContinentUnlock - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1215,7 +1212,7 @@ continentlock&quot;>ContinentLock</h4>
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>ContinentUnlock - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1233,12 +1230,12 @@ continentlock&quot;>ContinentLock</h4>
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExperience)</h4>
+<p>&ldquo;A continent has been unlocked.&rdquo;</p>
 
-<p>&ldquo;A player has gained experience. Match experience_id with http://census.daybreakgames.com/get/ps2/experience to find out what they did. Field other_id may refer to another player, or a vehicle, etc.&rdquo;</p>
+<h3 id="experienceearned-census-gainexperience">ExperienceEarned (Census: GainExperience)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>ExperienceEarned - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1255,7 +1252,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>ExperienceEarned - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1276,12 +1273,12 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="facilitycontrol-census-facilitycontrol">FacilityControl (Census: FacilityControl)</h4>
+<p>&ldquo;A player has gained experience. Match experience_id with http://census.daybreakgames.com/get/ps2/experience to find out what they did. Field other_id may refer to another player, or a vehicle, etc.&rdquo;</p>
 
-<p>&ldquo;A facility has changed hands.&rdquo;</p>
+<h3 id="facilitycontrol-census-facilitycontrol">FacilityControl (Census: FacilityControl)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>FacilityControl - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1298,7 +1295,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>FacilityControl - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1321,12 +1318,12 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="login-census-playerlogin-playerlogout">Login (Census: PlayerLogin, PlayerLogout)</h4>
+<p>&ldquo;A facility has changed hands.&rdquo;</p>
 
-<p>&ldquo;A character has logged in, or out of the game.&rdquo;</p>
+<h3 id="login-census-playerlogin-playerlogout">Login (Census: PlayerLogin, PlayerLogout)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>Login - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1342,7 +1339,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>Login - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1359,12 +1356,12 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="metagameevent-census-metagameevent">MetagameEvent (Census: MetagameEvent)</h4>
+<p>&ldquo;A character has logged in, or out of the game.&rdquo;</p>
 
-<p>&ldquo;A metagame event (alert) has started or ended.&rdquo;</p>
+<h3 id="metagameevent-census-metagameevent">MetagameEvent (Census: MetagameEvent)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>MetagameEvent - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1380,7 +1377,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>MetagameEvent - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1402,12 +1399,12 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="playerfacilitycontrol-census-playerfacilitycapture-playerfacilitydefend">PlayerFacilityControl (Census: PlayerFacilityCapture, PlayerFacilityDefend)</h4>
+<p>&ldquo;A metagame event (alert) has started or ended.&rdquo;</p>
 
-<p>&ldquo;A player has taken part in the capture, or defense of a facility.&rdquo;</p>
+<h3 id="playerfacilitycontrol-census-playerfacilitycapture-playerfacilitydefend">PlayerFacilityControl (Census: PlayerFacilityCapture, PlayerFacilityDefend)</h3>
 
 <blockquote>
-<p>Subscription Options</p>
+<p>PlayerFacilityControl - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1424,7 +1421,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>PlayerFacilityControl - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1443,12 +1440,11 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h4 id="vehicledestroy-census-vehicledestroy">VehicleDestroy (Census: VehicleDestroy)</h4>
+<p>&ldquo;A player has taken part in the capture, or defense of a facility.&rdquo;</p>
 
-<p>&ldquo;A vehicle has been destroyed.&rdquo;</p>
-
+<h3 id="vehicledestroy-census-vehicledestroy">VehicleDestroy (Census: VehicleDestroy)
 <blockquote>
-<p>Subscription Options</p>
+<p>VehicleDestroy - Subscription Options</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subscribe"</span><span class="p">,</span><span class="w">
@@ -1467,7 +1463,7 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 </span></code></pre>
 
 <blockquote>
-<p>Example Response</p>
+<p>VehicleDestroy - Example Response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"payload"</span><span class="p">:</span><span class="w">
@@ -1485,6 +1481,8 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
   </span><span class="nt">"event_type"</span><span class="p">:</span><span class="s2">"PlayerFacilityControl"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
+
+<p>&ldquo;A vehicle has been destroyed.&rdquo;</p>
 
           <h1 id="data-reference">Data Reference</h1>
 
@@ -1523,6 +1521,114 @@ experienceearned-census-gainexperience&quot;>ExperienceEarned (Census: GainExper
 <td>Briggs</td>
 </tr>
 </tbody></table>
+
+<h3 id="zones-continents">zones (Continents)</h3>
+
+<table><thead>
+<tr>
+<th>ID</th>
+<th>Zone</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>2</td>
+<td>Indar</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Hossin</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Amerish</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Esamir</td>
+</tr>
+</tbody></table>
+
+<h3 id="factions">factions</h3>
+
+<table><thead>
+<tr>
+<th>ID</th>
+<th>Faction</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>0</td>
+<td>Nanite Systems</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Vanu Sovereignty</td>
+</tr>
+<tr>
+<td>2</td>
+<td>New Conglomerate</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Terran Republic</td>
+</tr>
+</tbody></table>
+
+<h2 id="static-data-event-specific">Static Data - Event Specific</h2>
+
+<h3 id="achievements">achievements</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME</a></p>
+
+<p>Replace “ACHIEVEMENTNAME” with the name of the weapon, medal or ribbon you wish to lookup.</p>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100000&amp;c:lang=en</a></p>
+
+<p>Alternatively you can see all types by looking at the above link.</p>
+
+<h3 id="loadouts">loadouts</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/loadout?c:limit=1000&amp;c:show=code_name,loadout_id</a></p>
+
+<h3 id="vehicles">vehicles</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/vehicle?c:limit=1000&amp;c:show=vehicle_id,name.en</a></p>
+
+<h3 id="weapons-items">weapons/items</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/item?c:show=item_id,name.en&amp;name.en=ITEMNAME</a></p>
+
+<p>Replace “ITEMNAME” with the name of the item or weapon you wish to lookup.</p>
+
+<h3 id="experience">experience</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/experience?c:limit=1000</a></p>
+
+<h3 id="facility">facility</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/map_region?c:limit=1000&amp;c:show=facility_id,zone_id,facility_name,facility_type</a></p>
+
+<h3 id="metagame_types">metagame_types</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/metagame_event?c:limit=1000&amp;c:lang=en</a></p>
+
+<h2 id="dynamic-data">Dynamic Data</h2>
+
+<h3 id="characters">characters</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/character_name/?name.first=CHARACTERNAME</a></p>
+
+<p>Replace CHARACTERNAME with the name of the character.</p>
+
+<h3 id="outfits">outfits</h3>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/outfit?c:show=alias,name,outfit_id&amp;alias=TAG</a></p>
+
+<p>Replace TAG with your outfit alias/tag.</p>
+
+<p><a href="http://census.daybreakgames.com/get/ps2:v2/achievement?c:limit=100&amp;c:lang=en&amp;name.en=ACHIEVEMENTNAME">http://census.daybreakgames.com/get/ps2:v2/outfit?c:show=alias,name,outfit_id&amp;name=OUTFITNAME</a></p>
+
+<p>Replace OUTFITNAME with your outfit’s name.</p>
 
           
       </div>
