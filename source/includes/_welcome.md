@@ -1,6 +1,10 @@
 # Welcome!
-<aside class="success">
-All API Services are operating normally.
+<aside class="warning">
+This API service has been retired. The documentation here is left for reference.
+
+For API development and help, please reach out to the Planetside Community Developers discord server:
+
+http://planetside.community/developers/discord
 </aside>
 
 Welcome to the Extended Planetside 2 Census API Documentation! Here, you will find documented examples and JSON formats for the various feeds provided by the API service, and the additional subscription/filter features that you can use to customize the events you receive.
